@@ -16,6 +16,25 @@ AC_ARG_WITH(gstversion,
 
 PKG_CHECK_MODULES(GSTREAMER, gstreamer-$GST_MAJORMINOR gstreamer-pbutils-$GST_MAJORMINOR)
 
+AC_ARG_WITH(amlogic,
+	AC_HELP_STRING([--with-amlogic], [use amlogic MPEG decoder]),
+	[[with_amlogic=$withval]],
+	[[with_amlogic=no]]
+)
+AM_CONDITIONAL(HAVE_AMLOGIC, test x"$with_amlogic" = xyes)
+if test x"$with_amlogic" = xyes ; then
+	AC_DEFINE(HAVE_AMLOGIC, 1,[Enables AMLOGIC decoder support])
+fi
+
+if test "$BOXTYPE" == "alien5"; then
+	AC_DEFINE(HAVE_ALIEN5, 1,[enable Alien5 specific hacks])
+fi
+
+if test "$BOXTYPE" == "k1plus" -o "$BOXTYPE" == "k1pro" -o "$BOXTYPE" == "k2pro" -o "$BOXTYPE" == "k2prov2" -o "$BOXTYPE" == "k3pro" -o "$BOXTYPE" == "kvim2" -o "$BOXTYPE" == "c300" -o "$BOXTYPE" == "c300pro" -o "$BOXTYPE" == "c400plus" -o "$BOXTYPE" == "alien4"; then
+	AC_DEFINE(HAVE_ALIEN5, 1,[enable Alien5 specific hacks])
+	AC_DEFINE(HAVE_MECOOL, 1,[enable Mecool devices specific hacks])
+fi
+
 AC_DEFINE([DEBUG])
 
 AC_CONFIG_FILES([

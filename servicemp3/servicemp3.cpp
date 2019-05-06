@@ -21,6 +21,12 @@
 #include <gst/pbutils/missing-plugins.h>
 #include <sys/stat.h>
 
+#if HAVE_ALIEN5
+extern "C" {
+#include <codec.h>
+}
+#endif
+
 #define HTTP_TIMEOUT 30
 
 /*
@@ -624,6 +630,17 @@ eServiceMP3::eServiceMP3(eServiceReference ref):
 #endif
 	if ( m_gst_playbin )
 	{
+#if HAVE_ALIEN5
+		aml_set_mediaplay_source((void *)m_gst_playbin,(int)m_sourceinfo.is_audio);
+#endif
+#if HAVE_MECOOL
+		/*
+		* test forcing aml-video-sink
+		*/
+		videoSink = gst_element_factory_make("amlvsink", "GstDVBVideoSink");
+		g_object_set (m_gst_playbin, "video-sink", videoSink, NULL);
+		eDebug("setting video-sink=amlvsink");
+#endif
 		/*
 		 * avoid video conversion, let the dvbmediasink handle that using native video flag
 		 * volume control is done by hardware, do not use soft volume flag
