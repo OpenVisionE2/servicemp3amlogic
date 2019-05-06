@@ -16,6 +16,12 @@ AC_ARG_WITH(gstversion,
 
 PKG_CHECK_MODULES(GSTREAMER, gstreamer-$GST_MAJORMINOR gstreamer-pbutils-$GST_MAJORMINOR)
 
+AC_ARG_WITH(boxtype,
+	[  --with-boxtype=NAME box type [[none,dm800...]]],
+	[BOXTYPE="$withval"],[BOXTYPE="dm800"])
+AC_SUBST(BOXTYPE)
+AC_DEFINE_UNQUOTED(BOXTYPE,"$BOXTYPE",[box type])
+
 AC_ARG_WITH(amlogic,
 	AC_HELP_STRING([--with-amlogic], [use amlogic MPEG decoder]),
 	[[with_amlogic=$withval]],
