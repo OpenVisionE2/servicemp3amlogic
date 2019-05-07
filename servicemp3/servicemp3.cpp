@@ -23,7 +23,7 @@
 
 #if HAVE_ALIEN5
 extern "C" {
-#include <codec.h>
+#include "codec.h"
 }
 #endif
 
