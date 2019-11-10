@@ -17,10 +17,16 @@ AC_ARG_WITH(gstversion,
 PKG_CHECK_MODULES(GSTREAMER, gstreamer-$GST_MAJORMINOR gstreamer-pbutils-$GST_MAJORMINOR)
 
 AC_ARG_WITH(boxtype,
-	[  --with-boxtype=NAME box type [[none,dm800...]]],
-	[BOXTYPE="$withval"],[BOXTYPE="dm800"])
+	AS_HELP_STRING([--with-boxtype],[build for BOXTYPE, $withval]),
+	[BOXTYPE=$withval],[BOXTYPE=dm800])
 AC_SUBST(BOXTYPE)
 AC_DEFINE_UNQUOTED(BOXTYPE,"$BOXTYPE",[box type])
+
+AC_ARG_WITH(boxbrand,
+	AS_HELP_STRING([--with-boxbrand],[build for BOXBRAND, $withval]),
+	[BOXBRAND="$withval"],[BOXBRAND="dreambox"])
+AC_SUBST(BOXBRAND)
+AC_DEFINE_UNQUOTED(BOXBRAND,"$BOXBRAND",[box brand])
 
 AC_ARG_WITH(amlogic,
 	AC_HELP_STRING([--with-amlogic], [use amlogic MPEG decoder]),
@@ -36,8 +42,7 @@ if test "$BOXTYPE" == "alien5"; then
 	AC_DEFINE(HAVE_ALIEN5, 1,[enable Alien5 specific hacks])
 fi
 
-if test "$BOXTYPE" == "k1plus" -o "$BOXTYPE" == "k1pro" -o "$BOXTYPE" == "k2pro" -o "$BOXTYPE" == "k2prov2" -o "$BOXTYPE" == "k3pro" -o "$BOXTYPE" == "kvim2" -o "$BOXTYPE" == "c300" -o "$BOXTYPE" == "c300pro" -o "$BOXTYPE" == "c400plus" -o "$BOXTYPE" == "alien4"; then
-	AC_DEFINE(HAVE_ALIEN5, 1,[enable Alien5 specific hacks])
+if test "$BOXBRAND" == "mecool"; then
 	AC_DEFINE(HAVE_MECOOL, 1,[enable Mecool devices specific hacks])
 fi
 
