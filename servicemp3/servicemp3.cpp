@@ -452,7 +452,7 @@ eServiceMP3::eServiceMP3(eServiceReference ref):
 	m_use_chapter_entries = false; /* TOC chapter support CVR */
 	m_last_seek_pos = 0; /* CVR last seek position */
 #endif
-	m_useragent = "Enigma2 HbbTV/1.1.1 (+PVR+RTSP+DL;OpenPLi;;;)";
+	m_useragent = "Enigma2 HbbTV/1.1.1 (+PVR+RTSP+DL;OpenVision;;;)";
 	m_extra_headers = "";
 	m_download_buffer_path = "";
 	m_prev_decoder_time = -1;
@@ -904,7 +904,7 @@ RESULT eServiceMP3::stop()
 
 	eDebug("[eServiceMP3] stop %s", m_ref.path.c_str());
 	m_state = stStopped;
-	m_subtitles_paused = false
+	m_subtitles_paused = false;
 	GstStateChangeReturn ret;
 	GstState state, pending;
 	/* make sure that last state change was successfull */
@@ -1148,7 +1148,7 @@ seek_unpause:
 	{
 		if (ratio >= 0.0)
 		{
-			gst_element_seek(m_gst_playbin, ratio, GST_FORMAT_TIME, (GstSeekFlags)(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_SKIP), GST_SEEK_TYPE_SET, pos, GST_SEEK_TYPE_SET, -1);
+			gst_element_seek(m_gst_playbin, ratio, GST_FORMAT_TIME, (GstSeekFlags)(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT | GST_SEEK_FLAG_SKIP), GST_SEEK_TYPE_SET, pos, GST_SEEK_TYPE_SET, -1);
 		}
 		else
 		{
@@ -1862,10 +1862,13 @@ void eServiceMP3::gstBusCall(GstMessage *msg)
 
 			switch(transition)
 			{
+				case GST_STATE_CHANGE_NULL_TO_READY:
+				{
+					m_event(this, evStart);
+				}	break;
 				case GST_STATE_CHANGE_READY_TO_PAUSED:
 				{
 					m_state = stRunning;
-					m_event(this, evStart);
 #if GST_VERSION_MAJOR >= 1
 					GValue result = { 0, };
 #endif
@@ -3149,6 +3152,8 @@ void eServiceMP3::pushSubtitles()
 				m_subtitle_widget->setPage(pango_page);
 			}
 		}
+
+	}
 
 	// no more subs in cache, fall through
 
